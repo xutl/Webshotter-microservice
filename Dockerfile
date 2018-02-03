@@ -1,16 +1,13 @@
-FROM yuncms/docker:web
-
-MAINTAINER XUTL <xutl@gmail.com>
-
-ADD nginx.conf /etc/nginx/conf.d/default.conf
+FROM xutongle/php:7.1-nginx
 
 COPY . /app/
 
 WORKDIR /app
 
-RUN chmod 700 /app/run.sh \
-    && chmod 777 /app/runtime
+RUN composer install --prefer-dist --no-dev --optimize-autoloader --no-progress \
+	&& cp .env.example .env \
+	&& rm -rf /usr/local/html \
+	&& ln -s /app/public /usr/local/html
 
 EXPOSE 80
 
-CMD ["/app/run.sh"]
